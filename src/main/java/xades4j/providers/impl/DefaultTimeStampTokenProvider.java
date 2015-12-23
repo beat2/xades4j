@@ -16,7 +16,6 @@
  */
 package xades4j.providers.impl;
 
-import com.google.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +26,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIStatus;
 import org.bouncycastle.tsp.TSPAlgorithms;
 import org.bouncycastle.tsp.TSPException;
@@ -36,6 +35,9 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampToken;
+
+import com.google.inject.Inject;
+
 import xades4j.UnsupportedAlgorithmException;
 import xades4j.providers.MessageDigestEngineProvider;
 import xades4j.providers.TimeStampTokenGenerationException;
@@ -49,10 +51,10 @@ import xades4j.providers.TimeStampTokenProvider;
  */
 public class DefaultTimeStampTokenProvider implements TimeStampTokenProvider
 {
-    private static final Map<String, ASN1ObjectIdentifier> digestUriToOidMappings;
+    private static final Map<String, String> digestUriToOidMappings;
     static
     {
-        digestUriToOidMappings = new HashMap<String, ASN1ObjectIdentifier>(6);
+        digestUriToOidMappings = new HashMap<String, String>(6);
         digestUriToOidMappings.put(MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5, TSPAlgorithms.MD5);
         digestUriToOidMappings.put(MessageDigestAlgorithm.ALGO_ID_DIGEST_RIPEMD160, TSPAlgorithms.RIPEMD160);
         digestUriToOidMappings.put(MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1, TSPAlgorithms.SHA1);
@@ -62,7 +64,7 @@ public class DefaultTimeStampTokenProvider implements TimeStampTokenProvider
     }
 
     // TODO this probably should be a provider to avoid being dependent on a fixed set of algorithms
-    private static ASN1ObjectIdentifier identifierForDigest(String digestAlgUri)
+    private static String identifierForDigest(String digestAlgUri)
     {
         return digestUriToOidMappings.get(digestAlgUri);
     }
@@ -74,7 +76,7 @@ public class DefaultTimeStampTokenProvider implements TimeStampTokenProvider
     @Inject
     public DefaultTimeStampTokenProvider(MessageDigestEngineProvider messageDigestProvider)
     {
-        this(messageDigestProvider, "http://tss.accv.es:8318/tsa");
+        this(messageDigestProvider, "http://tsa.starfieldtech.com/");
     }
 
     DefaultTimeStampTokenProvider(MessageDigestEngineProvider messageDigestProvider, String tsaUrl)
